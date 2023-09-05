@@ -1,0 +1,133 @@
+---
+title: "CMB 5915: Homework 1"
+author: Gretchen North
+format: html
+editor: visual
+self-contained: true
+echo: false
+warning: false
+message: false
+---
+
+## Part 1
+
+### About IMS
+
+Many of the topics look familiar to me. I've either seen them in research papers' methods or I've conducted them myself. Some of the specific sections which appear less familiar to me are in the section on Foundations of Inference (hypothesis testing with randomization; bootstrapping; and decision errors). Most everything else in the book I have experience with.
+
+### About MDS
+
+Given my computing in R background, most of the topics with respect to introductory data science are old-hat. However, predictive modeling, supervised learning, and unsupervised learning are novel topics in data science to me. I have worked (but would certainly benefit from more experience in) with dynamic data graphics, SQL database queries, geospatial data, and big data.
+
+### Computing Background
+
+I have extensive experiene in R and RStudio, including independent descriptive and exploratory statistical analysis for independent research. I took PUBH 7462: Adv Data Analysis & Vis in R during Spring 2023 and received a letter grade A as the only undergraduate in the course. I also have experience using JMP, MATLAB, Excel.
+
+R is my favorite statistical software to use; I do prefer JMP when it comes to preliminary exploratory statistics as it is easier to render exploratory figures, but I find R is a powerful, versatile tool (when you know how to wield it). I'm excited to add to my R toolbox, but I hope not too much of the R content is review. I am more excited about developing a robust statistical skill set which I can then apply to interpreting summary statistics from analyses I conduct in R.
+
+## Part 2
+
+Dataset from Jegede, O. O., Standen, K. M., Siciliano, S., Lamb, E. G., & Stewart, K. J. (2023). Rocks, lichens, and woody litter influenced the soil invertebrate density in upland tundra heath. *Plos one*, *18*(5), e0282068.
+
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0282068#sec014
+
+### About the Data
+
+What are the observations (the cases)? What are the variables, and what types are they? What relationships between the variables are of interest? Identify the main explanatory and response variables, if applicable. Are the observations independent?
+
+The observations are soil invertebrate taxa (enchytrids, collembollans, and mites) in undisturbed upland tundra sample sies.
+
+#### Variables
+
+-   SiteName: The name of the sample site, discrete categorical.
+-   SiteCode: Unique code assigned to site, discrete categorical.
+-   Replicate: Number of intra-site case replicate, ordinal numeric.
+-   UTM: Site coordinates, continuous numeric.
+-   pH, Na, NH4, K, Mg, Ca, Cl, SO4, PO4, NO3: Soil attribute metrics, continuous numeric.
+-   Orib_mites: Number of oribatid mites collected at site replicate, continuous numeric.
+-   Pred_mites: Number of pred mites collected at site replicate, continuous numeric.
+-   Collem: Number of collembolans collected at site replicate, continuous numeric.
+-   Enchy: Number of enchytraeids collected at site replicate, continuous numeric.
+-   All_Mites: Sum of all mites collected (including orib_mites and pred_mites), continuous numeric.
+-   Total_Invert: sum of individuals collected at the site replicate, continuous numeric.
+
+The study sought to investigate the role of rocks, lichens, and woody litter on soil invertebrate density in upland tunda. As such, the explanatory variables would be the soil attribute metrics (pH, Na, NH4, K, Mg, Ca, Cl, SO4, PO4, NO3) and the response in abundance of invertebrate taxa sampled (mites, collembolans, and enchytraeids). The observations are independent.
+
+### About the study
+
+The population of interest is soil invertebrates in upland tundra biomes. The sample for the study was taken at at the Agnico Eagle Mines (AEM) Meliadine site (63°01'22.9"N, 92°11'41.1"W) within the Kivalliq region of Nunavut Territory, Canada. Therefore, the study sample represents only a small portion of the global arctic soil invertebrate population within the broader geographic reach of the upland tundra biome.
+
+The findings can be generalized (with caution) to the population level with respect to soil invertebrates within upland tundra regions. The results would be best applied intra-regionally. They cannot be generalized to all soil invertebrate communities across biomes.
+
+Because the findings were observational, we cannot use these findings to establish causal relationship. However, the findings can be used to inform the design of future experimental studies. Sampling was carried out randomly within 4 specified upland tundra health sites, each with 8-10 intra-site replicates. No treatments were applied, so no random assignment was necessary in carrying out this study.
+
+### Basic Exploration
+
+#### Reading in tidy data, here(), glimpse(), & skim()
+
+```{r}
+#| echo: true
+
+library(readr)
+library(tidyverse)
+library(here)
+
+data <- read_csv(here("data", "data_hmk1.csv")) %>%
+  rename("SiteName" = "Site Name",
+         "SiteCode" = "Site Code")
+
+```
+
+##### Using glimpse()
+
+```{r}
+
+glimpse(data)
+
+```
+
+##### Using skim()
+
+```{r}
+
+skimr::skim(data)
+
+```
+
+#### Categorical count
+
+```{r}
+#| echo: false
+
+library(ggplot2)
+
+ggplot(data, aes(x = SiteName)) +
+  geom_bar() +
+  theme_bw() +
+  xlab("Site Name") +
+  ylab("Case Count")
+
+```
+
+#### Numerical scatterplot
+
+```{r}
+
+library(ggplot2)
+
+ggplot(data, aes(x = NO3, y = Enchy, col = SiteCode)) +
+  geom_jitter() +
+  xlab("Site-level NO3 content") +
+  ylab("Number of Enchytrids Sampled at Site") + 
+  ggtitle("Enchytrid Abundance in Response to Site-Level NO3 Content")
+
+
+```
+
+#### R version details
+
+```{r}
+
+print(version)
+
+```
